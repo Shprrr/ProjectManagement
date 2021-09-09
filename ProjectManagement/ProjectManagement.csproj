@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GraphShape.Controls" Version="1.2.0" />
+    <PackageReference Include="QuikGraph.Graphviz" Version="2.3.0" />
+  </ItemGroup>
+
+</Project>

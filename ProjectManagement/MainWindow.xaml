@@ -1,0 +1,24 @@
+﻿<Window x:Class="ProjectManagement.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:ProjectManagement"
+        xmlns:models="clr-namespace:ProjectManagement.Models"
+        xmlns:layout="clr-namespace:GraphShape.Algorithms.Layout;assembly=GraphShape" mc:Ignorable="d" d:Width="800"
+        d:Height="400" Title="Project Management" Height="768" Width="1024" WindowState="Maximized">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type models:ItemNode}">
+            <TextBlock Text="{Binding Path=Title}" ToolTip="{Binding Path=Description}" Background="Aqua" />
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <StackPanel>
+            <ComboBox x:Name="cboLayoutChoices" SelectedValue="{Binding ElementName=graphCanvas, Path=LayoutAlgorithmType}" />
+        </StackPanel>
+
+        <local:GraphLayout x:Name="graphCanvas" Grid.Column="1" LayoutAlgorithmType="Tree" OverlapRemovalAlgorithmType="FSA"
+                HighlightAlgorithmType="Simple" ShowAllStates="False" AsyncCompute="True" Background="AliceBlue">
+            <local:GraphLayout.LayoutParameters>
+                <layout:SimpleTreeLayoutParameters LayerGap="20" />
+            </local:GraphLayout.LayoutParameters>
+        </local:GraphLayout>
+    </Grid>
+</Window>

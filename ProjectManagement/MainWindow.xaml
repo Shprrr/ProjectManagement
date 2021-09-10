@@ -3,22 +3,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:ProjectManagement"
         xmlns:models="clr-namespace:ProjectManagement.Models"
         xmlns:layout="clr-namespace:GraphShape.Algorithms.Layout;assembly=GraphShape" mc:Ignorable="d" d:Width="800"
-        d:Height="400" Title="Project Management" Height="768" Width="1024" WindowState="Maximized">
+        d:Height="400" d:DataContext="{d:DesignInstance Type=local:MainViewModel}" Title="Project Management" Height="768"
+        Width="1024" WindowState="Maximized">
+    <Window.CommandBindings>
+        <CommandBinding Command="New" CanExecute="NewCommand_CanExecute" Executed="NewCommand_Executed" />
+    </Window.CommandBindings>
     <Window.Resources>
         <DataTemplate DataType="{x:Type models:ItemNode}">
             <TextBlock Text="{Binding Path=Title}" ToolTip="{Binding Path=Description}" Background="Aqua" />
         </DataTemplate>
     </Window.Resources>
-    <Grid>
-        <StackPanel>
-            <ComboBox x:Name="cboLayoutChoices" SelectedValue="{Binding ElementName=graphCanvas, Path=LayoutAlgorithmType}" />
-        </StackPanel>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" Command="New" />
+                <MenuItem Header="_Open" Command="Open" />
+                <MenuItem Header="_Save" Command="Save" />
+                <Separator />
+                <MenuItem Header="_Exit" Click="ExitCommand_Click" />
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Text="Debug Controls" />
+                <ComboBox x:Name="cboLayoutChoices" SelectedValue="{Binding ElementName=graphCanvas, Path=LayoutAlgorithmType}" />
+                <ToggleButton Content="IsDirty" IsChecked="{Binding IsDirty}" />
+            </StackPanel>
 
-        <local:GraphLayout x:Name="graphCanvas" Grid.Column="1" LayoutAlgorithmType="Tree" OverlapRemovalAlgorithmType="FSA"
-                HighlightAlgorithmType="Simple" ShowAllStates="False" AsyncCompute="True" Background="AliceBlue">
-            <local:GraphLayout.LayoutParameters>
-                <layout:SimpleTreeLayoutParameters LayerGap="20" />
-            </local:GraphLayout.LayoutParameters>
-        </local:GraphLayout>
-    </Grid>
+            <local:GraphLayout x:Name="graphCanvas" Grid.Row="1" LayoutAlgorithmType="Tree" OverlapRemovalAlgorithmType="FSA"
+                    HighlightAlgorithmType="Simple" Background="AliceBlue">
+                <local:GraphLayout.LayoutParameters>
+                    <layout:SimpleTreeLayoutParameters LayerGap="20" />
+                </local:GraphLayout.LayoutParameters>
+            </local:GraphLayout>
+        </Grid>
+    </DockPanel>
 </Window>

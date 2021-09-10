@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="GraphShape.Controls" Version="1.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="QuikGraph.Graphviz" Version="2.3.0" />
   </ItemGroup>
 

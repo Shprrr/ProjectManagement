@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using GraphShape.Controls;
+using Microsoft.Win32;
 using ProjectManagement.Dialogs;
 using ProjectManagement.Models;
 using QuikGraph;
@@ -52,6 +54,27 @@ namespace ProjectManagement
                 viewModel.IsDirty = false;
                 ShowOpenedDocument();
             }
+        }
+
+        private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = viewModel.OpenedDocument != null && viewModel.IsDirty;
+        }
+
+        private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (!viewModel.OpenedDocument.CanBeSaved)
+            {
+                SaveFileDialog saveFileDialog = new();
+                saveFileDialog.FileName = $"{viewModel.OpenedDocument.Name}.prj";
+                saveFileDialog.DefaultExt = ".prj";
+                saveFileDialog.Filter = "Project file (*.prj)|*.prj|All files (*.*)|*.*";
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (!saveFileDialog.ShowDialog().GetValueOrDefault()) return;
+                viewModel.OpenedDocument.Filename = saveFileDialog.FileName;
+            }
+
+            viewModel.OpenedDocument.Save();
         }
 
         private void ExitCommand_Click(object sender, RoutedEventArgs e)

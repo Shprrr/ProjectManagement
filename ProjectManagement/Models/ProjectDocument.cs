@@ -23,5 +23,12 @@ namespace ProjectManagement.Models
 
             File.WriteAllText(Filename, JsonConvert.SerializeObject(this));
         }
+
+        public static ProjectDocument Load(string filename)
+        {
+            var document = JsonConvert.DeserializeObject<ProjectDocument>(File.ReadAllText(filename));
+            document.Filename = filename;
+            return document;
+        }
     }
 }

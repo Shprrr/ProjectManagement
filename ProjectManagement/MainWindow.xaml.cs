@@ -19,6 +19,7 @@ namespace ProjectManagement
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string ProjectExtension = ".prj";
         private readonly MainViewModel viewModel = new();
 
         public MainWindow()
@@ -36,16 +37,7 @@ namespace ProjectManagement
 
         private void NewCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (viewModel.IsDirty)
-                switch (MessageBox.Show("Do you want to save the changes ?", "Unsaved changes", MessageBoxButton.YesNoCancel))
-                {
-                    case MessageBoxResult.Cancel:
-                        return;
-
-                    case MessageBoxResult.Yes:
-                        //TODO: Save
-                        break;
-                }
+            if (!BeforeNewDocument()) return;
 
             NewProjectWindow newProjectWindow = new();
             if (newProjectWindow.ShowDialog().GetValueOrDefault())
@@ -56,30 +48,58 @@ namespace ProjectManagement
             }
         }
 
+        private void OpenCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void OpenCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (!BeforeNewDocument()) return;
+
+            OpenFileDialog openFileDialog = new()
+            {
+                DefaultExt = ProjectExtension,
+                Filter = $"Project file (*{ProjectExtension})|*{ProjectExtension}|All files (*.*)|*.*",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            };
+            if (openFileDialog.ShowDialog().GetValueOrDefault())
+            {
+                viewModel.OpenedDocument = ProjectDocument.Load(openFileDialog.FileName);
+                viewModel.IsDirty = false;
+                ShowOpenedDocument();
+            }
+        }
+
         private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = viewModel.OpenedDocument != null && viewModel.IsDirty;
         }
 
-        private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (!viewModel.OpenedDocument.CanBeSaved)
-            {
-                SaveFileDialog saveFileDialog = new();
-                saveFileDialog.FileName = $"{viewModel.OpenedDocument.Name}.prj";
-                saveFileDialog.DefaultExt = ".prj";
-                saveFileDialog.Filter = "Project file (*.prj)|*.prj|All files (*.*)|*.*";
-                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (!saveFileDialog.ShowDialog().GetValueOrDefault()) return;
-                viewModel.OpenedDocument.Filename = saveFileDialog.FileName;
-            }
-
-            viewModel.OpenedDocument.Save();
-        }
+        private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e) => SaveDocument();
 
         private void ExitCommand_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        /// <summary>
+        /// Returns if we accept to load the new document.
+        /// </summary>
+        /// <returns></returns>
+        private bool BeforeNewDocument()
+        {
+            if (viewModel.IsDirty)
+                switch (MessageBox.Show("Do you want to save the changes ?", "Unsaved changes", MessageBoxButton.YesNoCancel))
+                {
+                    case MessageBoxResult.Cancel:
+                        return false;
+
+                    case MessageBoxResult.Yes:
+                        return SaveDocument();
+                }
+
+            return true;
         }
 
         public void ShowOpenedDocument()
@@ -93,6 +113,26 @@ namespace ProjectManagement
             BidirectionalGraph<ItemNode, ItemLink> graph = new();
             graph.AddVertex(new ItemNode(viewModel.OpenedDocument.Name));
             graphCanvas.Graph = graph;
+        }
+
+        private bool SaveDocument()
+        {
+            if (!viewModel.OpenedDocument.CanBeSaved)
+            {
+                SaveFileDialog saveFileDialog = new()
+                {
+                    FileName = $"{viewModel.OpenedDocument.Name}{ProjectExtension}",
+                    DefaultExt = ProjectExtension,
+                    Filter = $"Project file (*{ProjectExtension})|*{ProjectExtension}|All files (*.*)|*.*",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                };
+                if (!saveFileDialog.ShowDialog().GetValueOrDefault()) return false;
+                viewModel.OpenedDocument.Filename = saveFileDialog.FileName;
+            }
+
+            viewModel.OpenedDocument.Save();
+            viewModel.IsDirty = false;
+            return true;
         }
     }
 }

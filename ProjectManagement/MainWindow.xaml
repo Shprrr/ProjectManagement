@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ProjectManagement.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:ProjectManagement"
-        xmlns:models="clr-namespace:ProjectManagement.Models"
+        xmlns:models="clr-namespace:ProjectManagement.Models" xmlns:adorned="clr-namespace:AdornedControl"
         xmlns:layout="clr-namespace:GraphShape.Algorithms.Layout;assembly=GraphShape" mc:Ignorable="d" d:Width="800"
         d:Height="400" d:DataContext="{d:DesignInstance Type=local:MainViewModel}" Title="Project Management" Height="768"
         Width="1024" WindowState="Maximized">
@@ -11,8 +11,30 @@
         <CommandBinding Command="Save" CanExecute="SaveCommand_CanExecute" Executed="SaveCommand_Executed" />
     </Window.CommandBindings>
     <Window.Resources>
+        <Style x:Key="AddIcon" TargetType="Path">
+            <Setter Property="Data"
+                    Value="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+            <Setter Property="Fill" Value="Black" />
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+        </Style>
         <DataTemplate DataType="{x:Type models:ItemNode}">
-            <TextBlock Text="{Binding Path=Title}" ToolTip="{Binding Path=Description}" Background="Aqua" />
+            <adorned:AdornedControl VerticalAdornerPlacement="Outside" CloseAdornerTimeOut="1">
+                <TextBlock Text="{Binding Path=Title}" ToolTip="{Binding Path=Description}" Background="Aqua" />
+                <adorned:AdornedControl.AdornerContent>
+                    <Canvas HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <StackPanel>
+                            <Button Click="AddNodeButton_Click">
+                                <Path Style="{StaticResource AddIcon}">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleX=".75" ScaleY=".75" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Button>
+                        </StackPanel>
+                    </Canvas>
+                </adorned:AdornedControl.AdornerContent>
+            </adorned:AdornedControl>
         </DataTemplate>
     </Window.Resources>
     <DockPanel>

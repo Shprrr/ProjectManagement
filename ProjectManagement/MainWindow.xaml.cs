@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using GraphShape.Controls;
 using Microsoft.Win32;
@@ -133,6 +134,14 @@ namespace ProjectManagement
             viewModel.OpenedDocument.Save();
             viewModel.IsDirty = false;
             return true;
+        }
+
+        private void AddNodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var parentNode = (ItemNode)((Button)sender).DataContext;
+            var newNode = new ItemNode("New Node");
+            graphCanvas.Graph.AddVertex(newNode);
+            graphCanvas.Graph.AddEdge(new ItemLink { Source = parentNode, Target = newNode });
         }
     }
 }

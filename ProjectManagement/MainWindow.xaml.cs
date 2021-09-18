@@ -112,8 +112,19 @@ namespace ProjectManagement
             }
 
             BidirectionalGraph<ItemNode, ItemLink> graph = new();
-            graph.AddVertex(new ItemNode(viewModel.OpenedDocument.Name));
+            ShowItemNode(graph, viewModel.OpenedDocument);
             graphCanvas.Graph = graph;
+        }
+
+        private void ShowItemNode(BidirectionalGraph<ItemNode, ItemLink> graph, ItemNode itemNode, ItemNode parentNode = null)
+        {
+            graph.AddVertex(itemNode);
+            if (parentNode != null)
+                graph.AddEdge(new ItemLink { Source = parentNode, Target = itemNode });
+            foreach (var child in itemNode.GetChildren())
+            {
+                ShowItemNode(graph, child, itemNode);
+            }
         }
 
         private bool SaveDocument()
@@ -122,7 +133,7 @@ namespace ProjectManagement
             {
                 SaveFileDialog saveFileDialog = new()
                 {
-                    FileName = $"{viewModel.OpenedDocument.Name}{ProjectExtension}",
+                    FileName = $"{viewModel.OpenedDocument.Title}{ProjectExtension}",
                     DefaultExt = ProjectExtension,
                     Filter = $"Project file (*{ProjectExtension})|*{ProjectExtension}|All files (*.*)|*.*",
                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
@@ -139,9 +150,10 @@ namespace ProjectManagement
         private void AddNodeButton_Click(object sender, RoutedEventArgs e)
         {
             var parentNode = (ItemNode)((Button)sender).DataContext;
-            var newNode = new ItemNode("New Node");
-            graphCanvas.Graph.AddVertex(newNode);
-            graphCanvas.Graph.AddEdge(new ItemLink { Source = parentNode, Target = newNode });
+            var newNode = new Goal("New Goal");
+            parentNode.AddChild(newNode);
+            ShowItemNode(graphCanvas.Graph, newNode, parentNode);
+            viewModel.IsDirty = true;
         }
     }
 }

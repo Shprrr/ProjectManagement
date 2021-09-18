@@ -1,17 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
 namespace ProjectManagement.Models
 {
-    public class ProjectDocument
+    public class ProjectDocument : ItemNode
     {
-        public ProjectDocument(string name)
+        private readonly List<Goal> goals = new();
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Supprimer les membres privés non utilisés", Justification = "For Deserializing")]
+        [JsonConstructor]
+        private ProjectDocument(Goal[] goals)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.goals.AddRange(goals);
         }
 
-        public string Name { get; set; }
+        public ProjectDocument(string name)
+        {
+            Title = name ?? throw new ArgumentNullException(nameof(name));
+        }
+
+        public Goal[] Goals => goals.ToArray();
         [JsonIgnore]
         public string Filename { get; set; }
         [JsonIgnore]
@@ -26,9 +36,17 @@ namespace ProjectManagement.Models
 
         public static ProjectDocument Load(string filename)
         {
-            var document = JsonConvert.DeserializeObject<ProjectDocument>(File.ReadAllText(filename));
+            var document = JsonConvert.DeserializeObject<ProjectDocument>(File.ReadAllText(filename),
+                new JsonSerializerSettings { ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor });
             document.Filename = filename;
             return document;
         }
+
+        public override void AddChild(ItemNode node)
+        {
+            goals.Add((Goal)node);
+        }
+
+        public override ItemNode[] GetChildren() => Goals;
     }
 }

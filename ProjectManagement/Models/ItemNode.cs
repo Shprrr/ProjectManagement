@@ -1,13 +1,11 @@
 ﻿namespace ProjectManagement.Models
 {
-    internal class ItemNode
+    public abstract class ItemNode
     {
-        public ItemNode(string title)
-        {
-            Title = title;
-        }
-
         public string Title { get; set; }
         public string Description { get; set; }
+
+        public abstract void AddChild(ItemNode node);
+        public abstract ItemNode[] GetChildren();
     }
 }

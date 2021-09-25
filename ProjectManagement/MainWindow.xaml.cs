@@ -155,5 +155,48 @@ namespace ProjectManagement
             ShowItemNode(graphCanvas.Graph, newNode, parentNode);
             viewModel.IsDirty = true;
         }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ClearFocus();
+        }
+
+        private void ClearFocus()
+        {
+            if (Keyboard.FocusedElement != null)
+                Keyboard.FocusedElement.RaiseEvent(new RoutedEventArgs(LostFocusEvent));
+            Keyboard.ClearFocus();
+            Keyboard.Focus(this);
+        }
+
+        private void ItemNodeTitleTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            textBox.Focusable = true;
+            textBox.IsReadOnly = false;
+            textBox.Focus();
+            e.Handled = true;
+        }
+
+        private void ItemNodeTitleTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            viewModel.IsDirty = true;
+        }
+
+        private void ItemNodeTitleTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+
+            ClearFocus();
+            e.Handled = true;
+        }
+
+        private void ItemNodeTitleTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = (TextBox)sender;
+            textBox.Focusable = false;
+            textBox.IsReadOnly = true;
+            e.Handled = true;
+        }
     }
 }

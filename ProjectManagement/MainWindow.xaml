@@ -1,10 +1,11 @@
 ﻿<Window x:Class="ProjectManagement.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:ProjectManagement"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime" xmlns:local="clr-namespace:ProjectManagement"
         xmlns:models="clr-namespace:ProjectManagement.Models" xmlns:adorned="clr-namespace:AdornedControl"
         xmlns:layout="clr-namespace:GraphShape.Algorithms.Layout;assembly=GraphShape" mc:Ignorable="d" d:Width="800"
         d:Height="400" d:DataContext="{d:DesignInstance Type=local:MainViewModel}" Title="Project Management" Height="768"
-        Width="1024" WindowState="Maximized">
+        Width="1024" WindowState="Maximized" MouseDown="Window_MouseDown">
     <Window.CommandBindings>
         <CommandBinding Command="New" CanExecute="NewCommand_CanExecute" Executed="NewCommand_Executed" />
         <CommandBinding Command="Open" CanExecute="OpenCommand_CanExecute" Executed="OpenCommand_Executed" />
@@ -20,7 +21,10 @@
         </Style>
         <DataTemplate DataType="{x:Type models:ItemNode}">
             <adorned:AdornedControl VerticalAdornerPlacement="Outside" CloseAdornerTimeOut="1">
-                <TextBlock Text="{Binding Path=Title}" ToolTip="{Binding Path=Description}" Background="Aqua" />
+                <TextBox Text="{Binding Path=Title}" ToolTip="{Binding Path=Description}" Background="Aqua" Focusable="False"
+                        IsReadOnly="True" CaretIndex="{x:Static system:Int32.MaxValue}"
+                        MouseDoubleClick="ItemNodeTitleTextBox_MouseDoubleClick" TextChanged="ItemNodeTitleTextBox_TextChanged"
+                        KeyDown="ItemNodeTitleTextBox_KeyDown" LostFocus="ItemNodeTitleTextBox_LostFocus" />
                 <adorned:AdornedControl.AdornerContent>
                     <Canvas HorizontalAlignment="Center" VerticalAlignment="Bottom">
                         <StackPanel>

@@ -5,7 +5,7 @@
         xmlns:models="clr-namespace:ProjectManagement.Models" xmlns:adorned="clr-namespace:AdornedControl"
         xmlns:layout="clr-namespace:GraphShape.Algorithms.Layout;assembly=GraphShape" mc:Ignorable="d" d:Width="800"
         d:Height="400" d:DataContext="{d:DesignInstance Type=local:MainViewModel}" Title="Project Management" Height="768"
-        Width="1024" WindowState="Maximized" MouseDown="Window_MouseDown">
+        Width="1024" WindowState="Maximized" MouseDown="Window_MouseDown" Closing="Window_Closing">
     <Window.CommandBindings>
         <CommandBinding Command="New" CanExecute="NewCommand_CanExecute" Executed="NewCommand_Executed" />
         <CommandBinding Command="Open" CanExecute="OpenCommand_CanExecute" Executed="OpenCommand_Executed" />

@@ -42,11 +42,20 @@ namespace ProjectManagement.Models
             return document;
         }
 
+        public override ItemNode Parent { get => null; set => throw new InvalidOperationException(); }
+
         public override void AddChild(ItemNode node)
         {
+            node.Parent = this;
             goals.Add((Goal)node);
         }
 
         public override ItemNode[] GetChildren() => Goals;
+
+        public override void RemoveChild(ItemNode node)
+        {
+            goals.Remove((Goal)node);
+            node.Parent = null;
+        }
     }
 }

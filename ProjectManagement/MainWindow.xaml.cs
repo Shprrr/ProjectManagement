@@ -173,6 +173,14 @@ namespace ProjectManagement
             viewModel.IsDirty = true;
         }
 
+        private void RemoveNodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var node = (ItemNode)((Button)sender).DataContext;
+            node.Parent.RemoveChild(node);
+            ShowOpenedDocument();
+            viewModel.IsDirty = true;
+        }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             ClearFocus();

@@ -13,6 +13,10 @@ namespace ProjectManagement.Models
         [JsonConstructor]
         private ProjectDocument(Goal[] goals)
         {
+            foreach (var goal in goals)
+            {
+                goal.Parent = this;
+            }
             this.goals.AddRange(goals);
         }
 

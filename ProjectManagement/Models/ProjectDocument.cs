@@ -21,6 +21,8 @@ namespace ProjectManagement.Models
             Title = name ?? throw new ArgumentNullException(nameof(name));
         }
 
+        public override bool CanRemove => false;
+
         public Goal[] Goals => goals.ToArray();
         [JsonIgnore]
         public string Filename { get; set; }

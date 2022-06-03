@@ -500,6 +500,8 @@ namespace AdornedControl
 
             if (AdornerContent != null)
             {
+                UpdateAdornerDataContext();
+
                 if (adornerLayer == null)
                 {
                     adornerLayer = AdornerLayer.GetAdornerLayer(this);
@@ -527,8 +529,6 @@ namespace AdornedControl
                                                                HorizontalAdornerPlacement, VerticalAdornerPlacement,
                                                                AdornerOffsetX, AdornerOffsetY);
                     adornerLayer.Add(adorner);
-
-                    UpdateAdornerDataContext();
                 }
             }
 

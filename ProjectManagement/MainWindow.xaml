@@ -47,6 +47,16 @@
                                         <ScaleTransform ScaleX=".75" ScaleY=".75" />
                                     </Path.LayoutTransform>
                                 </Path>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=CanRemove}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
                             </Button>
                         </StackPanel>
                     </Canvas>
